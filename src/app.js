@@ -13,7 +13,7 @@ import viewsRouter from "./routes/viewsRouter.js"
 const app = express();
 
 app.use(express.json());
-router.use(urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
 app.engine('handlebars', engine());
@@ -31,7 +31,7 @@ app.use(session({
     // }),
     store: new MongoStore({
         mongoUrl:"mongodb://localhost:27017/class-zero",
-        ttl: 10
+        ttl: 3600
     }),
     secret:"secretodecookie",
     resave: false,
@@ -42,11 +42,11 @@ app.use("/api/sessions", sessionsRouter)
 
 app.use("/", viewsRouter)
 
-app.use(express.json())
-// app.post("/session", async(req, res, next)=>{
-//     req.session.user = req.body
-//     res.json({mensaje:"sesion iniciada"})
-// })
+
+app.post("/session", async(req, res, next)=>{
+    req.session.user = req.body
+    res.json({mensaje:"sesion iniciada"})
+})
 
 // app.get("/session", async(req, res, next)=>{
 //     res.json(req.session.user)
