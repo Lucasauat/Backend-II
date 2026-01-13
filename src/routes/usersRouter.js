@@ -1,5 +1,8 @@
-import { json, Router } from "express";
+import { json, Router, urlencoded } from "express";
 import { userModel } from "../models/usersModels.js";
+import { createHash } from "../utils.js";
+import passport from "passport";
+
 const router = Router();
 
 router.get("/leer", async (req, res, next) => {
@@ -11,7 +14,30 @@ router.get("/leer", async (req, res, next) => {
   }
 });
 
+router.get('/failure-register', async (req, res, next)=>{
+  res.status(400).json({message: "registro fallido"})
+})
+
 router.use(json());
+router.use(urlencoded({extended:true}))
+
+// router.post('/register', async (req, res, next)=>{
+//   try {
+//     const {first_name, last_name, email, password} = req.body
+//     const newUser = await userModel.create({first_name, last_name, email, password: createHash(password)})
+
+//     res.json(newUser)
+//   } catch (error) {
+//     console.log(error.message)
+//   }
+// })
+
+router.post('/register',
+  passport.authenticate("register", {failureRedirect: "/failure-register"}),
+   async (req, res, next)=>{
+  res.status(200).json({message:"registro exitoso"})
+})
+
 
 router.post("/crear", async (req, res, next) => {
   const user = req.body;

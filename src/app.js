@@ -9,6 +9,9 @@ import MongoStore from "connect-mongo";
 import sessionsRouter from "./routes/sessionsRouter.js"
 import { serverRoot } from "./utils.js";
 import viewsRouter from "./routes/viewsRouter.js"
+import passport from "passport";
+import { initializePassport } from "./config/passport.js";
+import { generateToken, verifyToken } from "./utils.js";
  
 const app = express();
 
@@ -22,6 +25,9 @@ app.set('views', serverRoot + '/views');
 
 
 // const Filestore = fileStorage(session)
+initializePassport()
+app.use(passport.initialize())
+// app.use(passport.session())
 
 app.use(session({
     // store: new Filestore({
@@ -58,6 +64,14 @@ app.post("/session", async(req, res, next)=>{
 //     })
 //     .send('cookie seteada')
 // })
+
+app.get("/jwt-assign", async (req, res, next)=>{
+    const user = {
+    "email" : "test@test.com",
+    "password" : "contraseña"
+}
+    res.cookie("jwt", generateToken(user)).json({mesagge:"cookie generada"})
+})
 
 app.listen(8080, ()=> {
   console.log("servidor activo en puerto 8080")
