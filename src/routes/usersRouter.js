@@ -21,17 +21,6 @@ router.get('/failure-register', async (req, res, next)=>{
 router.use(json());
 router.use(urlencoded({extended:true}))
 
-// router.post('/register', async (req, res, next)=>{
-//   try {
-//     const {first_name, last_name, email, password} = req.body
-//     const newUser = await userModel.create({first_name, last_name, email, password: createHash(password)})
-
-//     res.json(newUser)
-//   } catch (error) {
-//     console.log(error.message)
-//   }
-// })
-
 router.post('/register',
   passport.authenticate("register", {failureRedirect: "/failure-register"}),
    async (req, res, next)=>{

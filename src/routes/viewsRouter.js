@@ -7,7 +7,6 @@ router.get("/login", async (req, res, next)=>{
 
 router.get("/profile", async (req, res, next) => {
     try {
-        // Validación de seguridad: si no hay usuario, mandarlo al login
         if (!req.session || !req.session.user) {
             return res.redirect("/login");
         }
@@ -18,6 +17,18 @@ router.get("/profile", async (req, res, next) => {
         console.log("Error en profile:", error);
         res.redirect("/login");
     }
+});
+
+router.get("/reset-password", (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.render("resetPassword", {
+      error: "Token inválido o inexistente"
+    });
+  }
+
+  res.render("resetPassword", { token });
 });
 
 export default router;

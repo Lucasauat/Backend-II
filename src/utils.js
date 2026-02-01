@@ -12,16 +12,13 @@ export function createHash (password){
 export function isValidPassword(password, hashedPassword){
     return bcrypt.compareSync(password, hashedPassword)
 }
-const hash = createHash("luquitas")
 
 export function generateToken(payload){
-    return jwt.sign(payload, "elsecretodekratos")
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" })
 }
 
 export function verifyToken(token){
-    return jwt.verify(token, "elsecretodekratos")
+    return jwt.verify(token, process.env.JWT_SECRET)
 }
-const token = generateToken({nombre:"lucas"})
 
-console.log(verifyToken(token))
-// console.log(isValidPassword("luquitas", hash))
+
